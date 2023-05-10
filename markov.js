@@ -11,7 +11,6 @@ class MarkovMachine {
     // include things like "The", "cat", "cat.".
 
     this.words = text.split(/[ \r\n]+/);
-    console.log(this.words)
     this.chains = this.getChains();
   }
 
@@ -34,34 +33,50 @@ class MarkovMachine {
     const chainWords = {};
 
     for (let i = 0; i < this.words.length; i++){
-      console.log(this.words[i]);
+
+      const nextWord = this.words[i+1]  || null
+
       if ((this.words[i]) in chainWords){
-        chainWords[this.words[i]].push(this.words[i+1])
+        chainWords[this.words[i]].push(nextWord)
       }else{
-        chainWords[this.words[i]] = [this.words[i+1]]
+        chainWords[this.words[i]] = [nextWord]
       }
     }
-    console.log(chainWords)
     return chainWords;
-
   }
 
 
   /** Return random text from chains, starting at the first word and continuing
    *  until it hits a null choice. */
+
   getRandomWord(words){
-    return Math.floor(Math.random() * words.length)
+    return words[Math.floor(Math.random() * words.length)]
   }
 
 
+/** will return a random sentence */
 
   getText() {
     // TODO: implement this!
-    
-
     // - start at the first word in the input text
     // - find a random word from the following-words of that
     // - repeat until reaching the terminal null
+
+    const firstWord = this.words[0];
+    const sentence = [firstWord];
+
+    // refactor to while loop potentially (look at solution)
+    for (let word of sentence) {
+      const randomWord = this.getRandomWord(this.chains[word]);
+
+      if (randomWord === null) {
+        break;
+      }
+
+      sentence.push(randomWord);
+    }
+
+    return sentence.join(' ');
   }
 }
 
